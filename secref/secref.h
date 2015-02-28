@@ -64,6 +64,14 @@ namespace dynlib {
 				return *this;
 			}
 
+			Reference& operator = (Object * data) {
+				if (this->data != data) {
+					remove();
+					this->data = data;
+				}
+				return *this;
+			}
+
 			bool isEmpty()const {
 				return data == 0;
 			}
