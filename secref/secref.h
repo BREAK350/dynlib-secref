@@ -63,8 +63,10 @@ namespace dynlib {
 			}
 
 			Reference& operator = (Reference & ref) {
-				remove();
-				copy(ref);
+				if (this != &ref) {
+					remove();
+					copy(ref);
+				}
 				return *this;
 			}
 
