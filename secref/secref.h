@@ -84,7 +84,7 @@ namespace dynlib {
 				return data != ref.data;
 			}
 
-			bool isEmpty()const {
+			bool isNull()const {
 				return data == 0;
 			}
 
