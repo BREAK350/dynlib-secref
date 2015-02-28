@@ -76,6 +76,14 @@ namespace dynlib {
 				return *this;
 			}
 
+			bool operator == (Reference & ref)const {
+				return data == ref.data;
+			}
+
+			bool operator != (Reference & ref)const {
+				return data != ref.data;
+			}
+
 			bool isEmpty()const {
 				return data == 0;
 			}
