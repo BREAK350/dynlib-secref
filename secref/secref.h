@@ -6,6 +6,19 @@
 namespace dynlib {
 	namespace secref {
 
+		template<class Object>
+		class Reference {
+		private:
+			Object *data;
+			Reference *prev;
+			Reference *next;
+
+		public:
+			Reference();
+			~Reference();
+
+			Object get()const;
+		};
 	}
 }
 // ---------------------------------------------------------------------------
