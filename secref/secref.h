@@ -56,6 +56,10 @@ namespace dynlib {
 				return *data;
 			}
 
+			Object* operator->()const {
+				return data;
+			}
+
 			Reference& operator = (Reference & ref) {
 				if (this != &ref) {
 					remove();
