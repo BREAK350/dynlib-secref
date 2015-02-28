@@ -13,28 +13,6 @@ namespace dynlib {
 			Reference *prev;
 			Reference *next;
 
-			void remove() {
-				if (prev) {
-					if (next) {
-						prev->next = next;
-						next->prev = prev;
-					}
-					else {
-						prev->next = 0;
-					}
-				}
-				else {
-					if (next) {
-						next->prev = 0;
-					}
-					else {
-						if (data) {
-							delete data;
-						}
-					}
-				}
-			}
-
 			void copy(Reference &ref) {
 				if (ref.data) {
 					data = ref.data;
@@ -110,6 +88,29 @@ namespace dynlib {
 					}
 				}
 				return count;
+			}
+
+			void remove() {
+				if (prev) {
+					if (next) {
+						prev->next = next;
+						next->prev = prev;
+					}
+					else {
+						prev->next = 0;
+					}
+				}
+				else {
+					if (next) {
+						next->prev = 0;
+					}
+					else {
+						if (data) {
+							delete data;
+						}
+					}
+				}
+				empty();
 			}
 
 		};
