@@ -94,7 +94,7 @@ namespace dynlib {
 
 			int getCountOfCopy()const {
 				int count = 0;
-				if (!isEmpty()) {
+				if (!isNull()) {
 					count = 1;
 					Reference *ref = prev;
 					while (ref) {
