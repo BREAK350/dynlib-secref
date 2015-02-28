@@ -86,6 +86,10 @@ namespace dynlib {
 				return *this;
 			}
 
+			bool isEmpty() {
+				return data == 0;
+			}
+
 		};
 	}
 }
