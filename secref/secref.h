@@ -94,6 +94,24 @@ namespace dynlib {
 				return prev || next;
 			}
 
+			int getCountOfCopy()const {
+				int count = 0;
+				if (!isEmpty()) {
+					count = 1;
+					Reference *ref = prev;
+					while (ref) {
+						++count;
+						ref = ref->prev;
+					}
+					ref = next;
+					while (ref) {
+						++count;
+						ref = ref->next;
+					}
+				}
+				return count;
+			}
+
 		};
 	}
 }
