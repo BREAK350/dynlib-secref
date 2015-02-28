@@ -3,6 +3,26 @@
 #define secrefH
 
 // ---------------------------------------------------------------------------
+/*
+----class Reference<Object>{
+----public:
+--------Reference();
+--------Reference(Object *data);
+--------Reference(Reference &ref);
+--------~Reference();
+--------Object& get()const;
+--------Object* operator->()const;
+--------Reference& operator = (Reference & ref);
+--------Reference& operator = (Object * data);
+--------bool operator == (Reference & ref)const;
+--------bool operator != (Reference & ref)const;
+--------bool isNull()const;
+--------bool hasCopy()const;
+--------int getCountOfCopy()const;
+--------void remove();
+};
+ */
+// ---------------------------------------------------------------------------
 namespace dynlib {
 	namespace secref {
 
