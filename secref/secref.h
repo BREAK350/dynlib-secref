@@ -86,7 +86,7 @@ namespace dynlib {
 				return *this;
 			}
 
-			bool isEmpty() {
+			bool isEmpty()const {
 				return data == 0;
 			}
 
