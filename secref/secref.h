@@ -28,26 +28,42 @@ namespace dynlib {
 						next->prev = 0;
 					}
 					else {
-						delete data;
+						if (data) {
+							delete data;
+						}
 					}
 				}
 			}
 
 			void copy(Reference &ref) {
-				data = ref.data;
-				next = ref.next;
-				prev = &ref;
-				if (ref.next) {
-					ref.next->prev = this;
+				if (ref.data) {
+					data = ref.data;
+					next = ref.next;
+					prev = &ref;
+					if (ref.next) {
+						ref.next->prev = this;
+					}
+					ref.next = this;
 				}
-				ref.next = this;
+				else {
+					empty();
+				}
+			}
+
+			void empty() {
+				data = 0;
+				prev = 0;
+				next = 0;
 			}
 
 		public:
 			Reference() {
-				data = new Object();
-				prev = 0;
-				next = 0;
+				empty();
+			}
+
+			Reference(Object *data) {
+				empty();
+				this->data = data;
 			}
 
 			Reference(Reference &ref) {
