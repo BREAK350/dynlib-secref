@@ -90,6 +90,10 @@ namespace dynlib {
 				return data == 0;
 			}
 
+			bool hasCopy()const {
+				return prev || next;
+			}
+
 		};
 	}
 }
