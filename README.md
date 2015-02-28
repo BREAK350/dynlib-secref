@@ -1,1 +1,3 @@
-﻿# Security Referanca
+﻿# Security Reference
+
+Фреймворк для безпечної роботи з вказівниками в с++.
