@@ -33,15 +33,16 @@ namespace dynlib {
 			Reference *prev;
 			Reference *next;
 
-			void copy(Reference &ref) {
-				if (ref.data) {
-					data = ref.data;
-					next = ref.next;
-					prev = &ref;
-					if (ref.next) {
-						ref.next->prev = this;
+			void copy(const Reference &ref) {
+				Reference *r = const_cast<Reference*>(&ref);
+				if (r->data) {
+					data = r->data;
+					next = r->next;
+					prev = r;
+					if (r->next) {
+						r->next->prev = this;
 					}
-					ref.next = this;
+					r->next = this;
 				}
 				else {
 					empty();
@@ -59,12 +60,12 @@ namespace dynlib {
 				empty();
 			}
 
-			Reference(Object *data) {
+			Reference(const Object *data) {
 				empty();
-				this->data = data;
+				this->data = const_cast<Object*>(data);
 			}
 
-			Reference(Reference &ref) {
+			Reference(const Reference &ref) {
 				copy(ref);
 			}
 
@@ -80,7 +81,7 @@ namespace dynlib {
 				return data;
 			}
 
-			Reference& operator = (Reference & ref) {
+			Reference& operator = (const Reference & ref) {
 				if (this != &ref) {
 					remove();
 					copy(ref);
@@ -88,19 +89,19 @@ namespace dynlib {
 				return *this;
 			}
 
-			Reference& operator = (Object * data) {
+			Reference& operator = (const Object * data) {
 				if (this->data != data) {
 					remove();
-					this->data = data;
+					this->data = const_cast<Object*>(data);
 				}
 				return *this;
 			}
 
-			bool operator == (Reference & ref)const {
+			bool operator == (const Reference & ref)const {
 				return data == ref.data;
 			}
 
-			bool operator != (Reference & ref)const {
+			bool operator != (const Reference & ref)const {
 				return data != ref.data;
 			}
 

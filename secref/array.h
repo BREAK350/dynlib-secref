@@ -25,7 +25,7 @@ namespace dynlib {
 			}
 
 			Array(int size) {
-				if (arr_size > 0) {
+				if (size > 0) {
 					arr_size = size;
 					arr = new Reference<Object>[arr_size];
 				}
