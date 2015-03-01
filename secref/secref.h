@@ -131,6 +131,16 @@ namespace dynlib {
 				return count;
 			}
 
+			void removeAll() {
+				while (prev) {
+					prev->remove();
+				}
+				while (next) {
+					next->remove();
+				}
+				remove();
+			}
+
 			void remove() {
 				if (prev) {
 					if (next) {
