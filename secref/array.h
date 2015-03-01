@@ -6,8 +6,16 @@
 #include "secref.h"
 
 // ---------------------------------------------------------------------------
-/*
- */
+namespace dynlib {
+	namespace secref {
+		template<class Object>
+		class ArrayAction {
+		public:
+			virtual void perform(const int &index, Reference<Object> &item) = 0;
+		};
+	}
+}
+
 // ---------------------------------------------------------------------------
 namespace dynlib {
 	namespace secref {
@@ -53,6 +61,12 @@ namespace dynlib {
 
 			bool isNull()const {
 				return arr == 0;
+			}
+
+			void forEach(Reference<ArrayAction<Object> >&action) {
+				for (int i = 0; i < arr_size; i++) {
+					action.get().perform(i, arr[i]);
+				}
 			}
 		};
 	}
