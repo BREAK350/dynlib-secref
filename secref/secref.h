@@ -113,7 +113,7 @@ namespace dynlib {
 				return prev || next;
 			}
 
-			int getCountOfCopy()const {
+			int getReferencesCount()const {
 				int count = 0;
 				if (!isNull()) {
 					count = 1;
