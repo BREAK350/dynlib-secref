@@ -32,9 +32,9 @@ namespace dynlib {
 			friend void __setPrev(IReference &iref, void *prev);
 			friend void __setData(IReference &iref, void *data);
 
-			friend void* __getNext(IReference &iref);
-			friend void* __getPrev(IReference &iref);
-			friend void* __getData(IReference &iref);
+			friend void* __getNext(const IReference &iref);
+			friend void* __getPrev(const IReference &iref);
+			friend void* __getData(const IReference &iref);
 
 			void *data;
 			void *prev;
@@ -53,15 +53,15 @@ namespace dynlib {
 			iref.data = data;
 		}
 
-		void* __getNext(IReference &iref) {
+		void* __getNext(const IReference &iref) {
 			return iref.next;
 		}
 
-		void* __getPrev(IReference &iref) {
+		void* __getPrev(const IReference &iref) {
 			return iref.prev;
 		}
 
-		void* __getData(IReference &iref) {
+		void* __getData(const IReference &iref) {
 			return iref.data;
 		}
 	}
@@ -72,22 +72,20 @@ namespace dynlib {
 	namespace secref {
 
 		template<class Object>
-		class Reference {
+		class Reference : public IReference {
 		private:
-			void *data;
-			void *prev;
-			void *next;
 
 			void copy(const Reference &ref) {
 				Reference *r = const_cast<Reference*>(&ref);
-				if (r->data) {
-					data = r->data;
-					next = r->next;
-					prev = r;
-					if (r->next) {
-						((Reference*)((Reference*)r)->next)->prev = this;
+				if (__getData(*r)) {
+					__setData(*this, __getData(*r));
+					__setNext(*this, __getNext(*r));
+					__setPrev(*this, __getPrev(*r));
+					if (__getNext(*r)) {
+						__setPrev(*((Reference*)__getNext(*(Reference*)r)),
+							(void*)this);
 					}
-					r->next = this;
+					__setNext(*r, (void*)this);
 				}
 				else {
 					empty();
@@ -95,9 +93,9 @@ namespace dynlib {
 			}
 
 			void empty() {
-				data = 0;
-				prev = 0;
-				next = 0;
+				__setData(*this, (void*)0);
+				__setPrev(*this, (void*)0);
+				__setNext(*this, (void*)0);
 			}
 
 		public:
@@ -105,12 +103,12 @@ namespace dynlib {
 				empty();
 			}
 
-			Reference(const Object *data) {
+			Reference(const Object * data) {
 				empty();
-				this->data = const_cast<Object*>(data);
+				__setData(*this, const_cast<Object*>(data));
 			}
 
-			Reference(const Reference &ref) {
+			Reference(const Reference & ref) {
 				copy(ref);
 			}
 
@@ -119,16 +117,18 @@ namespace dynlib {
 			}
 
 			Object& get()const {
-				return *((Object*)(data));
+				return *((Object*)(__getData(*this)));
 			}
 
 			template<class ExtendObject>
 			ExtendObject& get()const {
-				return *((ExtendObject*)(const_cast<Object*>((Object*)data)));
+				return *
+					((ExtendObject*)
+					(const_cast<Object*>((Object*)__getData(*this))));
 			}
 
 			Object* operator->()const {
-				return(Object*)data;
+				return(Object*)__getData(*this);
 			}
 
 			Reference& operator = (const Reference & ref) {
@@ -140,15 +140,15 @@ namespace dynlib {
 			}
 
 			Reference& operator = (const Object * data) {
-				if (this->data != data) {
+				if (__getData(*this) != data) {
 					remove();
-					this->data = const_cast<Object*>(data);
+					__setData(*this, const_cast<Object*>(data));
 				}
 				return *this;
 			}
 
 			bool operator == (const Reference & ref)const {
-				return data == ref.data;
+				return __getData(*this) == __getData(ref);
 			}
 
 			bool operator != (const Reference & ref)const {
@@ -156,7 +156,7 @@ namespace dynlib {
 			}
 
 			bool isNull()const {
-				return data == 0;
+				return __getData(*this) == 0;
 			}
 
 			bool hasCopy()const {
@@ -167,15 +167,15 @@ namespace dynlib {
 				int count = 0;
 				if (!isNull()) {
 					count = 1;
-					Reference *ref = (Reference*)prev;
+					IReference *ref = (IReference*)__getPrev(*this);
 					while (ref) {
 						++count;
-						ref = (Reference*)ref->prev;
+						ref = (IReference*)__getPrev(*ref);
 					}
-					ref = (Reference*)next;
+					ref = (IReference*)__getNext(*this);
 					while (ref) {
 						++count;
-						ref = (Reference*)ref->next;
+						ref = (IReference*)__getNext(*ref);
 					}
 				}
 				return count;
@@ -192,22 +192,24 @@ namespace dynlib {
 			}
 
 			void remove() {
-				if (prev) {
-					if (next) {
-						((Reference*)prev)->next = next;
-						((Reference*)next)->prev = prev;
+				if (__getPrev(*this)) {
+					if (__getNext(*this)) {
+						__setNext(*((IReference*)__getPrev(*this)),
+							__getNext(*this));
+						__setPrev(*((IReference*)__getNext(*this)),
+							__getPrev(*this));
 					}
 					else {
-						((Reference*)prev)->next = 0;
+						__setNext(*((IReference*)__getPrev(*this)), (void*)0);
 					}
 				}
 				else {
-					if (next) {
-						((Reference*)next)->prev = 0;
+					if (__getNext(*this)) {
+						__setPrev(*((IReference*)__getNext(*this)), (void*)0);
 					}
 					else {
-						if (data) {
-							delete(Object*)data;
+						if (__getData(*this)) {
+							delete(Object*)__getData(*this);
 						}
 					}
 				}
