@@ -82,7 +82,7 @@ namespace dynlib {
 				if (__getData(*r)) {
 					__setData(*this, __getData(*r));
 					__setNext(*this, __getNext(*r));
-					__setPrev(*this, __getPrev(*r));
+					__setPrev(*this, (void*)r);
 					if (__getNext(*r)) {
 						__setPrev(*((Reference*)__getNext(*(Reference*)r)),
 							(void*)this);
