@@ -39,6 +39,10 @@ namespace dynlib {
 			void *data;
 			void *prev;
 			void *next;
+
+		public:
+			virtual ~IReference() {
+			}
 		};
 
 		void __setNext(IReference *iref, void *next) {
@@ -114,7 +118,7 @@ namespace dynlib {
 				copy<Object, Object>(ref);
 			}
 
-			~Reference() {
+			virtual ~Reference() {
 				remove();
 			}
 
