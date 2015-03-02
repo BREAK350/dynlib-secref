@@ -75,8 +75,10 @@ namespace dynlib {
 		class Reference : public IReference {
 		private:
 
-			void copy(const Reference &ref) {
-				Reference *r = const_cast<Reference*>(&ref);
+			template<class Object, class ExtendObject>
+			void copy(const Reference<ExtendObject> &ref) {
+				Reference<ExtendObject> *r =
+					const_cast<Reference<ExtendObject> *>(&ref);
 				if (__getData(*r)) {
 					__setData(*this, __getData(*r));
 					__setNext(*this, __getNext(*r));
@@ -109,7 +111,7 @@ namespace dynlib {
 			}
 
 			Reference(const Reference & ref) {
-				copy(ref);
+				copy<Object, Object>(ref);
 			}
 
 			~Reference() {
@@ -134,7 +136,16 @@ namespace dynlib {
 			Reference& operator = (const Reference & ref) {
 				if (this != &ref) {
 					remove();
-					copy(ref);
+					copy<Object, Object>(ref);
+				}
+				return *this;
+			}
+
+			template<class ExtendObject>
+			Reference& operator = (const Reference<ExtendObject>&ref) {
+				if (this != &ref) {
+					remove();
+					copy<Object, ExtendObject>(ref);
 				}
 				return *this;
 			}
