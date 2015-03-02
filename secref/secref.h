@@ -29,7 +29,7 @@ namespace dynlib {
 		template<class Object>
 		class Reference {
 		private:
-			Object *data;
+			void *data;
 			void *prev;
 			void *next;
 
@@ -74,16 +74,16 @@ namespace dynlib {
 			}
 
 			Object& get()const {
-				return *data;
+				return *((Object*)(data));
 			}
 
 			template<class ExtendObject>
 			ExtendObject& get()const {
-				return *((ExtendObject*)(const_cast<Object*>(data)));
+				return *((ExtendObject*)(const_cast<Object*>((Object*)data)));
 			}
 
 			Object* operator->()const {
-				return data;
+				return(Object*)data;
 			}
 
 			Reference& operator = (const Reference & ref) {
@@ -162,7 +162,7 @@ namespace dynlib {
 					}
 					else {
 						if (data) {
-							delete data;
+							delete(Object*)data;
 						}
 					}
 				}
