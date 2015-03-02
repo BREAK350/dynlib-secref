@@ -26,6 +26,51 @@
 namespace dynlib {
 	namespace secref {
 
+		class IReference {
+		private:
+			friend void __setNext(IReference &iref, void *next);
+			friend void __setPrev(IReference &iref, void *prev);
+			friend void __setData(IReference &iref, void *data);
+
+			friend void* __getNext(IReference &iref);
+			friend void* __getPrev(IReference &iref);
+			friend void* __getData(IReference &iref);
+
+			void *data;
+			void *prev;
+			void *next;
+		};
+
+		void __setNext(IReference &iref, void *next) {
+			iref.next = next;
+		}
+
+		void __setPrev(IReference &iref, void *prev) {
+			iref.prev = prev;
+		}
+
+		void __setData(IReference &iref, void *data) {
+			iref.data = data;
+		}
+
+		void* __getNext(IReference &iref) {
+			return iref.next;
+		}
+
+		void* __getPrev(IReference &iref) {
+			return iref.prev;
+		}
+
+		void* __getData(IReference &iref) {
+			return iref.data;
+		}
+	}
+}
+
+// ---------------------------------------------------------------------------
+namespace dynlib {
+	namespace secref {
+
 		template<class Object>
 		class Reference {
 		private:
