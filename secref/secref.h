@@ -30,8 +30,8 @@ namespace dynlib {
 		class Reference {
 		private:
 			Object *data;
-			Reference *prev;
-			Reference *next;
+			void *prev;
+			void *next;
 
 			void copy(const Reference &ref) {
 				Reference *r = const_cast<Reference*>(&ref);
@@ -40,7 +40,7 @@ namespace dynlib {
 					next = r->next;
 					prev = r;
 					if (r->next) {
-						r->next->prev = this;
+						((Reference*)((Reference*)r)->next)->prev = this;
 					}
 					r->next = this;
 				}
@@ -122,15 +122,15 @@ namespace dynlib {
 				int count = 0;
 				if (!isNull()) {
 					count = 1;
-					Reference *ref = prev;
+					Reference *ref = (Reference*)prev;
 					while (ref) {
 						++count;
-						ref = ref->prev;
+						ref = (Reference*)ref->prev;
 					}
-					ref = next;
+					ref = (Reference*)next;
 					while (ref) {
 						++count;
-						ref = ref->next;
+						ref = (Reference*)ref->next;
 					}
 				}
 				return count;
@@ -149,16 +149,16 @@ namespace dynlib {
 			void remove() {
 				if (prev) {
 					if (next) {
-						prev->next = next;
-						next->prev = prev;
+						((Reference*)prev)->next = next;
+						((Reference*)next)->prev = prev;
 					}
 					else {
-						prev->next = 0;
+						((Reference*)prev)->next = 0;
 					}
 				}
 				else {
 					if (next) {
-						next->prev = 0;
+						((Reference*)next)->prev = 0;
 					}
 					else {
 						if (data) {
