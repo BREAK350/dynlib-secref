@@ -77,6 +77,11 @@ namespace dynlib {
 				return *data;
 			}
 
+			template<class ExtendObject>
+			ExtendObject& get()const {
+				return *((ExtendObject*)(const_cast<Object*>(data)));
+			}
+
 			Object* operator->()const {
 				return data;
 			}
